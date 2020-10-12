@@ -1,7 +1,7 @@
-class PostController{
+class PostController {
 
 
-    constructor(){
+    constructor() {
         this.posts = [];
         this.restController = new RestController();
         //UI
@@ -15,7 +15,7 @@ class PostController{
         this.addPostBtn;
 
     }
-    
+
     init() {
         $(document).ready(function () {
             console.log(this);
@@ -27,8 +27,8 @@ class PostController{
             this.modalCheck = $("#publicCheck");
             this.addPostBtn = $("#savePostBtn");
             this.addPostBtn = $("#savePostBtn");
-            
-            this.addPostBtn.click(function(){
+
+            this.addPostBtn.click(function () {
                 var post = new Post(
                     this.modalTitle.val(),
                     this.modalBody.val(),
@@ -43,9 +43,6 @@ class PostController{
 
             this.getPosts();
 
-           
-
-
         }.bind(this));
 
     }
@@ -54,17 +51,19 @@ class PostController{
 
     getPosts() {
 
-        this.restController.get("https://texty-89895.firebaseio.com/posts.json",function(data,status,xhr){
-                for(var id in data){
-                    var post = data[id];
-                    if(post.public === true){
-                        this.createUIPost(post);
-                    }
+        this.restController.get("http://localhost:3000/posts", function (data, status, xhr) {
+            console.log(data)
+
+            for (let k = 0; k < data.length; k++) {
+                var post = data[k];
+                console.log(post);
+                if (post.public === true) {
+                    post = new Post(post.title, post.body, post.public, post.featured);
+                    this.createUIPost(post);
                 }
-
-
-
+            }
         }.bind(this));
+
         // $.get({
         //     url: "https://texty-89895.firebaseio.com/posts.json",
         //     success: function(data,textStatus,jqXHR){
@@ -79,73 +78,44 @@ class PostController{
         //     }.bind(this)
         //   });
 
-        
+
     }
 
-    newPost(post){
+    newPost(post) { // ASSUMING post is a post object class.
         //api call
-        console.log()
+        //console.log()
         var data = {
-            "title":post.title,
+            "title": post.title,
             "body": post.body,
             "featured": post.featured,
-            "public": post.public,
-            "tag": [
-                "notizie",
-                "covid"
-            ]
-
+            "public": post.public
         }
 
         $.post({
-            url:"https://texty-89895.firebaseio.com/posts.json",
-            data : JSON.stringify(data),
-            success:function(data,status,xhr){
+            url: "http://localhost:3000/posts",
+            data: data,
+            success: function (data, status, xhr) {
                 this.createUIPost(post);
-
             }.bind(this)
-
-
         })
-
-
     }
 
 
-    addPost(post) {
 
-        console.log("post",post);
+    createUIPost(post) { // Assuming post is a post object class
         var postContainer = $("#postContainer").clone();
-        postContainer.css("display","block");
-        postContainer.attr("id","");
-        postContainer.addClass("class","postContainer");
-    
+        postContainer.css("display", "block");
+        postContainer.attr("id", "");
+        postContainer.addClass("class", "postContainer");
+
         var postHeader = postContainer.find(".card-header");
         var postBody = postContainer.find(".card-text");
-    
+
         postHeader.html(post.title);
         postBody.html(post.body);
-    
+
         $("#postsRow").append(postContainer);
 
-
-
-    }
-
-    createUIPost(post){
-        var postContainer = $("#postContainer").clone();
-        postContainer.css("display","block");
-        postContainer.attr("id","");
-        postContainer.addClass("class","postContainer");
-    
-        var postHeader = postContainer.find(".card-header");
-        var postBody = postContainer.find(".card-text");
-    
-        postHeader.html(post.title);
-        postBody.html(post.body);
-    
-        $("#postsRow").append(postContainer);
-    
     }
 
     closeModal() {
@@ -165,5 +135,5 @@ class PostController{
 
     }
 
-    
+
 }
