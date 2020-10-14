@@ -1,11 +1,3 @@
-var posts = [];
-
-posts.push(new Post("Titolo 2","dasadssd addsadsda adsdsa dsa saasd",true,false))
-posts.push(new Post("titolo 3","ldasda dasodsaodsa adsodoasdsa",false,true))
-posts.push(new Post("Titolo 4","dsadasd dsaasdasdas",true,false))
-posts.push(new Post("titolo 5","dasads sdads aasd",true,true))
-posts.push(new Post("Titolone","dasa dssd adsaasd  dsadsasddassadasd dasjkasd",true,false))
-
 
 new PostController().init();
 
@@ -44,7 +36,7 @@ new PostController().init();
 
 //     // }
 
-    
+
 
 //     // $("#savePostBtn").click(addPost);
 

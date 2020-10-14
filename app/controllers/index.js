@@ -13,12 +13,13 @@ class PostController {
         this.modalDescription;
         this.modalPublicCheck;
         this.addPostBtn;
-
     }
 
     init() {
+        //console.log("first", this)
+
         $(document).ready(function () {
-            console.log(this);
+            //console.log("second", this);  // E' il document object!, senza il bind(this)
             this.postsRow = $("#postsRow");
             this.postContainer = $("#postContainer");
             this.modal = $("#newPostModal");
@@ -28,18 +29,18 @@ class PostController {
             this.addPostBtn = $("#savePostBtn");
             this.addPostBtn = $("#savePostBtn");
 
-            this.addPostBtn.click(function () {
+            $("#savePostBtn").click(function () {
+                //console.log("third", this);
                 var post = new Post(
-                    this.modalTitle.val(),
-                    this.modalBody.val(),
-                    this.modalCheck.is(":checked"),
+                    $("#postTitle").val(),
+                    $("#postBody").val(),
+                    $("#publicCheck").is(":checked"),
                     false
                 );
                 this.newPost(post);
                 this.closeModal();
                 this.resetModal();
             }.bind(this));
-
 
             this.getPosts();
 
@@ -51,17 +52,22 @@ class PostController {
 
     getPosts() {
 
-        this.restController.get("http://localhost:3000/posts", function (data, status, xhr) {
-            console.log(data)
+        //console.log("this without bind", this);
+        //console.log("this.restcontroller", this.restController)
 
+        this.restController.get("http://localhost:3000/posts", function (data, status, xhr) {
+            //console.log("this inside", this);
             for (let k = 0; k < data.length; k++) {
                 var post = data[k];
-                console.log(post);
                 if (post.public === true) {
                     post = new Post(post.title, post.body, post.public, post.featured);
                     this.createUIPost(post);
+
+                    //console.log("this in for and if,", this)
                 }
             }
+
+            //console.log("this inside bind", this);
         }.bind(this));
 
         // $.get({
@@ -84,6 +90,9 @@ class PostController {
     newPost(post) { // ASSUMING post is a post object class.
         //api call
         //console.log()
+
+        console.log("new post, this", this); // This is the postController.
+
         var data = {
             "title": post.title,
             "body": post.body,
@@ -96,7 +105,8 @@ class PostController {
             data: data,
             success: function (data, status, xhr) {
                 this.createUIPost(post);
-            }.bind(this)
+                console.log(this); //Senza bind questo è un oggetto ajax.. type post, ecc..
+            }.bind(this)    // Il bind si applica a funzioni, quindi non posso metterlo sotto.
         })
     }
 
